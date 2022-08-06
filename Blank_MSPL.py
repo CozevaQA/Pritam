@@ -19,6 +19,7 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Color
 import re
 
+
 # """ USER INPUT """
 # CONFIG_FILE_PATH = "C:\\Users\\psur\\PycharmProjects\\Cozeva_Automation\\config.ini"
 # CUSTOMER_ID = 2100
@@ -42,7 +43,6 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
     # options.add_argument("--start-maximized")
     driver = webdriver.Chrome(executable_path=(config['path']['chrome_driver']), options=options)
 
-
     # **** CURRENT DATE & TIME ****
     def date_time():
         today = date.today()
@@ -52,7 +52,6 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
         now = str(today) + time_now
         print(now)
         return now
-
 
     wb = Workbook()
     wb.active.title = "CUSTOMER_ID " + str(CUSTOMER_ID)
@@ -81,7 +80,7 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
 
     # **** FOLDER CREATION ****
     dateandtime = date_time()
-    path = os.path.join((config['path']['parent_dir']), dateandtime + "_Provider MSPL_Customer "+str(CUSTOMER_ID))
+    path = os.path.join((config['path']['parent_dir']), dateandtime + "_Provider MSPL_Customer " + str(CUSTOMER_ID))
     os.mkdir(path)
     path1 = os.path.join(path, "Cust Id " + str(CUSTOMER_ID) + "_" + "MSPL")
     os.mkdir(path1)
@@ -94,7 +93,6 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     wb.save(path1 + '\\' + "Report.xlsx")
-
 
     def Login():
         try:
@@ -119,7 +117,6 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
             logger.critical("Exception occurred in Login function!")
             raise
 
-
     def mspl_blank():
         open_registry_page(CUSTOMER_ID)
         time.sleep(5)
@@ -141,7 +138,8 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
                 # for lob in range(3):
                 # lob = lob + 3
                 time.sleep(0.5)
-                WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "//a[@id='qt-filter-label']")))
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located((By.XPATH, "//a[@id='qt-filter-label']")))
                 driver.find_element_by_xpath("//a[@id='qt-filter-label']").click()
                 time.sleep(0.25)
                 quarter_name = quarters[quarter].text
@@ -150,7 +148,7 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
                 time.sleep(0.25)
                 lobs[lob].click()
                 lob_name = lobs[lob].text
-                lob_name=re.sub("[\/:*?<>|]","",lob_name)
+                lob_name = re.sub("[\/:*?<>|]", "", lob_name)
                 print(colored(lob_name, 'magenta'))
                 driver.find_element_by_xpath("//a[@id='reg-filter-apply']").click()
                 ajax_preloader_wait()
@@ -173,13 +171,14 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
                 score = 0
 
                 while measure_counter < len(measures_all) and score < len(scores):
-                    WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, "//a[@id='reg-faq-trigger']")))
+                    WebDriverWait(driver, 60).until(
+                        EC.presence_of_element_located((By.XPATH, "//a[@id='reg-faq-trigger']")))
                     time.sleep(0.5)
 
                     driver.execute_script("arguments[0].scrollIntoView();", measures_all[measure_counter])
                     measure_name = (measures_all[measure_counter]).text
-                    print("Measure name: ", measure_name)                    
-                    measure_name=re.sub("[\/:*?<>|]","",measure_name)
+                    print("Measure name: ", measure_name)
+                    measure_name = re.sub("[\/:*?<>|]", "", measure_name)
                     numdeno = scores[score].text
                     numdeno = numdeno.lstrip("(")
                     numdeno = numdeno.rstrip(")")
@@ -192,84 +191,115 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
                     measures_all[measure_counter].click()
                     try:
                         ajax_preloader_wait()
-                        if len(driver.find_elements_by_xpath("//td/a[contains(@href,'/registries/')]")) == 0 and float(Denominator) != 0 and float(Numerator) != 0:
-                            met_name = driver.find_element_by_xpath("//div[@class='ch metric_specific_patient_list_title']").text
+                        if len(driver.find_elements_by_xpath("//td/a[contains(@href,'/registries/')]")) == 0 and float(
+                                Denominator) != 0 and float(Numerator) != 0:
+                            met_name = driver.find_element_by_xpath(
+                                "//div[@class='ch metric_specific_patient_list_title']").text
                             logger.info("Metric name: %s", measure_name)
                             logger.warning("Providers list is blank. Please check manually.")
-                            sh1.append((quarter_name + " | " + lob_name, measure_name, 'Blank Providers List', 'NA', 'FAILED'))
-                            driver.save_screenshot(path2 + "\\" +quarter_name + " "+ lob_name + "_"+ measure_name+ ".png")
+                            sh1.append(
+                                (quarter_name + " | " + lob_name, measure_name, 'Blank Providers List', 'NA', 'FAILED'))
+                            driver.save_screenshot(
+                                path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
 
-                        elif len(driver.find_elements_by_xpath("//td/a[contains(@href,'/registries/')]")) == 0 and float(Denominator) == 0:
-                            met_name = driver.find_element_by_xpath("//div[@class='ch metric_specific_patient_list_title']").text
+                        elif len(
+                                driver.find_elements_by_xpath("//td/a[contains(@href,'/registries/')]")) == 0 and float(
+                            Denominator) == 0:
+                            met_name = driver.find_element_by_xpath(
+                                "//div[@class='ch metric_specific_patient_list_title']").text
                             logger.info("Metric name: %s", measure_name)
                             logger.info("Providers list is blank since measure score is zero.")
-                            sh1.append((quarter_name + " | " + lob_name, measure_name, 'Providers list is blank since measure score is zero.', 'NA', 'NA'))
-                            driver.save_screenshot(path2 + "\\" +quarter_name + " "+ lob_name + "_"+ measure_name+ ".png")
+                            sh1.append((quarter_name + " | " + lob_name, measure_name,
+                                        'Providers list is blank since measure score is zero.', 'NA', 'NA'))
+                            driver.save_screenshot(
+                                path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
 
                         elif len(driver.find_elements_by_xpath("//td/a[contains(@href,'/registries/')]")) == 0:
-                            met_name = driver.find_element_by_xpath("//div[@class='ch metric_specific_patient_list_title']").text
+                            met_name = driver.find_element_by_xpath(
+                                "//div[@class='ch metric_specific_patient_list_title']").text
                             logger.info("Metric name: %s", measure_name)
                             logger.info("Providers list is blank. Please check manually.")
-                            sh1.append((quarter_name + " | " + lob_name, measure_name, 'Providers list is blank. Please check manually.', 'NA', 'NA'))
-                            driver.save_screenshot(path2 + "\\" +quarter_name + " "+ lob_name + "_"+ measure_name+ ".png")
+                            sh1.append((quarter_name + " | " + lob_name, measure_name,
+                                        'Providers list is blank. Please check manually.', 'NA', 'NA'))
+                            driver.save_screenshot(
+                                path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
 
                         else:
                             if len(driver.find_elements_by_xpath("(//td/a[contains(@href,'/registries/')])[2]")) != 0:
-                                patient_list_link = driver.find_element_by_xpath("(//td/a[contains(@href,'/registries/')])[2]")
-                                provider_name = driver.find_element_by_xpath("(//td/a[contains(@href,'/registries?')])[2]").text
+                                patient_list_link = driver.find_element_by_xpath(
+                                    "(//td/a[contains(@href,'/registries/')])[2]")
+                                provider_name = driver.find_element_by_xpath(
+                                    "(//td/a[contains(@href,'/registries?')])[2]").text
                             else:
-                                patient_list_link = driver.find_element_by_xpath("(//td/a[contains(@href,'/registries/')])[1]")
-                                provider_name = driver.find_element_by_xpath("(//td/a[contains(@href,'/registries?')])[1]").text
+                                patient_list_link = driver.find_element_by_xpath(
+                                    "(//td/a[contains(@href,'/registries/')])[1]")
+                                provider_name = driver.find_element_by_xpath(
+                                    "(//td/a[contains(@href,'/registries?')])[1]").text
 
                             ActionChains(driver).move_to_element(patient_list_link).perform()
-                            ActionChains(driver).key_down(Keys.CONTROL).click(patient_list_link).key_up(Keys.CONTROL).perform()
+                            ActionChains(driver).key_down(Keys.CONTROL).click(patient_list_link).key_up(
+                                Keys.CONTROL).perform()
                             driver.switch_to.window(driver.window_handles[1])
                             time.sleep(0.5)
                             mspl_url0 = driver.current_url
 
                             try:
                                 ajax_preloader_wait()
-                                driver.find_element_by_xpath("//a[@class='datatable_filter_dropdown sidenav-trigger']").click()
+                                driver.find_element_by_xpath(
+                                    "//a[@class='datatable_filter_dropdown sidenav-trigger']").click()
                                 time.sleep(1)
                                 WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.LINK_TEXT, 'Apply')))
                                 driver.find_element_by_link_text('Clear All').click()
                                 time.sleep(0.5)
                                 driver.find_element_by_link_text('Apply').click()
                                 ajax_preloader_wait()
-                                patient_count = len(driver.find_elements_by_xpath("//td/div/a[contains(@href,'/patient_detail/')]"))
+                                patient_count = len(
+                                    driver.find_elements_by_xpath("//td/div/a[contains(@href,'/patient_detail/')]"))
                                 mspl_url1 = driver.current_url
 
                                 if patient_count == 0:
-                                    sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name, 'MSPL is blank!!', 'FAILED', mspl_url1))
+                                    sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name,
+                                                'MSPL is blank!!', 'FAILED', mspl_url1))
                                 elif patient_count != 0:
-                                    datatable_info = driver.find_element_by_xpath("//div[@id='quality_registry_list_info']").text
-                                    sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name, datatable_info, 'PASSED'))
-                                    driver.save_screenshot(path2 + "\\" + quarter_name + " "+lob_name + "_"+ measure_name+ ".png")
+                                    datatable_info = driver.find_element_by_xpath(
+                                        "//div[@id='quality_registry_list_info']").text
+                                    sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name,
+                                                datatable_info, 'PASSED'))
+                                    driver.save_screenshot(
+                                        path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
 
                             except Exception as e:
                                 print(e)
-                                logger.critical(measure_name + '\n' + provider_name + '\n' + "Metric specific patients list is not opening!Exception occurred!!")
-                                sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name, 'MSPL is NOT opening!', 'FAILED', mspl_url0))
-                                driver.save_screenshot(path2 + "\\" + quarter_name + " "+lob_name + "_"+ measure_name+ ".png")
+                                logger.critical(
+                                    measure_name + '\n' + provider_name + '\n' + "Metric specific patients list is not opening!Exception occurred!!")
+                                sh1.append((quarter_name + " | " + lob_name, measure_name, provider_name,
+                                            'MSPL is NOT opening!', 'FAILED', mspl_url0))
+                                driver.save_screenshot(
+                                    path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
 
                             finally:
                                 driver.close()
                                 driver.switch_to.window(driver.window_handles[0])
 
-                        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "//a[@class='breadcrumb']")))
+                        WebDriverWait(driver, 30).until(
+                            EC.presence_of_element_located((By.XPATH, "//a[@class='breadcrumb']")))
                         driver.find_element_by_xpath("//a[@class='breadcrumb']").click()
 
                     # Providers list open exception block
                     except Exception as e:
                         print(e)
-                        sh1.append((quarter_name + " | " + lob_name, measure_name, 'Providers list is not opening!', "NA", 'FAILED'))
-                        driver.save_screenshot(path2 + "\\" + quarter_name + " "+lob_name + "_"+ measure_name+ ".png")
+                        sh1.append((quarter_name + " | " + lob_name, measure_name, 'Providers list is not opening!',
+                                    "NA", 'FAILED'))
+                        driver.save_screenshot(
+                            path2 + "\\" + quarter_name + " " + lob_name + "_" + measure_name + ".png")
                         driver.get(last_url)
                         ajax_preloader_wait()
-                        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "//a[@data-target='qt-reg-nav-filters']")))
+                        WebDriverWait(driver, 30).until(
+                            EC.presence_of_element_located((By.XPATH, "//a[@data-target='qt-reg-nav-filters']")))
                         driver.find_element_by_xpath("//a[@data-target='qt-reg-nav-filters']").click()
                         time.sleep(0.25)
-                        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "//label[@class='col s12']")))
+                        WebDriverWait(driver, 30).until(
+                            EC.presence_of_element_located((By.XPATH, "//label[@class='col s12']")))
                         driver.find_element_by_xpath("//label[@class='col s12']").click()
                         time.sleep(0.25)
                         driver.find_element_by_xpath("//button[@id='qt-apply-search']").click()
@@ -296,7 +326,6 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
                 lobs = driver.find_elements_by_xpath("//ul[@id='filter-lob']/li[@class!='hide']")
                 quarters = driver.find_elements_by_xpath("//ul[@id='filter-quarter']/li")
 
-
     def open_registry_page(customer_id):
         customer_list_url = []
         sm_customer_id = str(customer_id)
@@ -308,26 +337,22 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
         for idx, val in enumerate(customer_list_url):
             driver.get("https://www.cozeva.com/registries?session=" + val.decode('utf-8'))
 
-
     def ajax_preloader_wait():
         try:
             time.sleep(1)
-            WebDriverWait(driver, 120).until(EC.invisibility_of_element((By.XPATH, "//div[contains(@class,'ajax_preloader')]")))
+            WebDriverWait(driver, 120).until(
+                EC.invisibility_of_element((By.XPATH, "//div[contains(@class,'ajax_preloader')]")))
             time.sleep(1)
 
         except Exception as e:
             return e
-
 
     Login()
     mspl_blank()
     driver.get(config['prod']['logout_url'])
     driver.quit()
 
+
 Blank_MSPL_Script(200, 3, 10)
 Blank_MSPL_Script(2100, 2, 3)
 Blank_MSPL_Script(2000, 2, 5)
-
-
-
-       
