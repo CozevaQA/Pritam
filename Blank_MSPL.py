@@ -129,9 +129,7 @@ def Blank_MSPL_Script(CUSTOMER_ID, QUARTER, COUNTER):
         lobs = driver.find_elements_by_xpath("//ul[@id='filter-lob']/li[@class!='hide']")
         driver.find_element_by_xpath("//a[@id='qt-filter-label']").click()
 
-        """    
-        *** QUARTER & LOB SELECTION ***    
-        """
+        # *** QUARTER & LOB SELECTION ***
         for quarter in range(QUARTER):
             # quarter = quarter + 1
             for lob in range(len(lobs)):
