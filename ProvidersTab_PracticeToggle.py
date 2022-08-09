@@ -103,8 +103,8 @@ def ProvidersTab():
 
     def Login():
         try:
-            driver.get(config['cert']['logout_url'])
-            driver.get(config['cert']['login_url'])
+            driver.get(config['prod']['logout_url'])
+            driver.get(config['prod']['login_url'])
             driver.maximize_window()
             driver.find_element_by_id("edit-name").send_keys(config['credentials']['username'])
             driver.find_element_by_id("edit-pass").send_keys(config['credentials']['password'])
@@ -210,11 +210,11 @@ def ProvidersTab():
         customer_list_url.append(encoded_string)
         for idx, val in enumerate(customer_list_url):
             # driver.get("https://www.cozeva.com/registries?session=" + val.decode('utf-8'))
-            driver.get("https://cert.cozeva.com/registries?session=" + val.decode('utf-8'))
+            driver.get("https://www.cozeva.com/registries?session=" + val.decode('utf-8'))
 
     Login()
     PracticeToggleFromProvidersTab()
-    driver.get(config['cert']['logout_url'])
+    driver.get(config['prod']['logout_url'])
     driver.quit()
 
 
