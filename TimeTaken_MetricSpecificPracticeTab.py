@@ -27,7 +27,7 @@ Customer_Id = [2100, 200]
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def BlankList_Support_Script(CUSTOMER_ID, QUARTER, COUNTER):
-    """ CONFIG PARSER """
+    # CONFIG PARSER
     file = '../config.ini'
     config = ConfigParser()
     config.read(CONFIG_FILE_PATH)
