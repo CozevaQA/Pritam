@@ -2,11 +2,11 @@
 import pandas as pd
 import re
 
-customer_id = 200
-file_path_supplemental_data = 'C:/Users/psur/Downloads/Supplemental Data 2024-04-16.csv'
-file_path_hcc_chart_list = 'C:/Users/psur/Downloads/HCC Chart List 2024-04-16.csv'
-file_path_awv_chart_list = 'C:/Users/psur/Downloads/AWV Chart List 2024-04-12 (2).csv'
-file_path_report = 'C:/Users/psur/Downloads/'
+customer_id = 9999
+file_path_supplemental_data = 'C:/Users/username/Downloads/Supplemental Data 2024-04-16.csv'
+file_path_hcc_chart_list = 'C:/Users/username/Downloads/HCC Chart List 2024-04-16.csv'
+file_path_awv_chart_list = 'C:/Users/username/Downloads/AWV Chart List 2024-04-12 (2).csv'
+file_path_report = 'C:/Users/username/Downloads/'
 
 
 def supplemental_data(customer_id, file_path_supplemental_data, report_body, observations_body):
